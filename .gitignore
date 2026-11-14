@@ -1,0 +1,19 @@
+# Python bytecode & environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+
+# IDE & OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Recordings, trained models & local secrets
+*.csv
+*.pkl
+.env
+.env.*

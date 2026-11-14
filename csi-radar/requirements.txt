@@ -1,0 +1,3 @@
+pyserial>=3.5,<4
+# Optional legacy classifier only: numpy, scipy, joblib and the EXACT scikit-learn
+# version used in training. The dashboard works without loading a model.

@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CSI Smart Care · CSI Motion Observatory</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111c;
+      --bg-soft: #0d1a28;
+      --card: #102031;
+      --card-2: #13263a;
+      --border: #21394f;
+      --text: #e6f1fc;
+      --muted: #8fa9bf;
+      --teal: #57e3c3;
+      --teal-bg: #143d3b;
+      --blue: #58b8ff;
+      --amber: #fbbf58;
+      --amber-bg: #382914;
+      --red: #ff667a;
+      --red-bg: #3b1420;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 18% 0%, #123146 0%, #07111c 48%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 20px 24px 36px
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .brand-eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.4px;
+      color: var(--teal);
+      text-transform: uppercase
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 3px 0 2px
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted)
+    }
+
+    .dot.live {
+      background: var(--teal);
+      box-shadow: 0 0 10px var(--teal)
+    }
+
+    .dot.warn {
+      background: var(--amber)
+    }
+
+    .dot.danger {
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red)
+    }
+
+    button,
+    .btn {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      background: #173247;
+      color: #d6f3ff;
+      border: 1px solid #305570;
+      border-radius: 9px;
+      padding: 9px 14px;
+      transition: background .15s, border-color .15s;
+    }
+
+    button:hover,
+    .btn:hover {
+      background: #204460;
+      border-color: #4b7fa3
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: wait
+    }
+
+    .btn-teal {
+      background: #154944;
+      border-color: #49d8bc;
+      color: #dcfff7
+    }
+
+    .btn-teal:hover {
+      background: #1c615b
+    }
+
+    .btn-danger {
+      background: #471725;
+      border-color: #f25f74;
+      color: #ffe2e7
+    }
+
+    .btn-danger:hover {
+      background: #611f32
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--muted)
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      background: #122436
+    }
+
+    .alert-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: linear-gradient(90deg, #4d1323, #33111c);
+      border: 1px solid var(--red);
+      border-radius: 14px;
+      padding: 15px 18px;
+      margin-bottom: 16px;
+      animation: pulseBorder 1.1s infinite alternate;
+    }
+
+    .alert-banner.show {
+      display: flex
+    }
+
+    @keyframes pulseBorder {
+      from {
+        box-shadow: 0 0 0 rgba(255, 102, 122, .2)
+      }
+
+      to {
+        box-shadow: 0 0 24px rgba(255, 102, 122, .45)
+      }
+    }
+
+    .alert-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffd5dc
+    }
+
+    .alert-sub {
+      font-size: 13px;
+      color: #ffb4c1;
+      margin-top: 3px
+    }
+
+    .setup-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #122638;
+      border: 1px solid #2e5975;
+      border-left: 4px solid var(--amber);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .setup-banner.show {
+      display: flex
+    }
+
+    .notice-bar {
+      background: rgba(19, 38, 58, .85);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 12.5px;
+      color: #c2d7ea;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--card), #0d1a29);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .stage-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage-visual {
+      position: relative;
+      height: 260px;
+      display: grid;
+      place-items: center;
+      margin: 6px 0 10px;
+      border-radius: 14px;
+      background: radial-gradient(circle, #143a49 0%, rgba(13, 26, 41, .2) 70%);
+    }
+
+    .stage-visual.state-fall {
+      background: radial-gradient(circle, #521828 0%, rgba(13, 26, 41, .2) 72%)
+    }
+
+    .stage-visual.state-motion {
+      background: radial-gradient(circle, #124943 0%, rgba(13, 26, 41, .2) 72%)
+    }
+
+    .halo {
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      border: 2px solid rgba(87, 227, 195, .38);
+      transition: transform .3s, border-color .3s, opacity .3s;
+    }
+
+    .halo-inner {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 1px dashed rgba(88, 184, 255, .35);
+    }
+
+    #poseSvg {
+      position: relative;
+      z-index: 2;
+      width: 170px;
+      height: 170px
+    }
+
+    .stage-state {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 4px 0
+    }
+
+    .stage-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      min-height: 40px
+    }
+
+    .stage-meta {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px
+    }
+
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 196px;
+    }
+
+    .kpi-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: #152c3f;
+      color: #93c5e2;
+      border: 1px solid #284b68;
+    }
+
+    .badge.good {
+      background: var(--teal-bg);
+      color: #85f7dc;
+      border-color: #2a7d6f
+    }
+
+    .badge.warn {
+      background: var(--amber-bg);
+      color: #ffd584;
+      border-color: #7d5924
+    }
+
+    .badge.danger {
+      background: var(--red-bg);
+      color: #ff9dad;
+      border-color: #8a2c40
+    }
+
+    .kpi-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .kpi-val {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #f3f9ff
+    }
+
+    .kpi-unit {
+      font-size: 14px;
+      color: var(--muted)
+    }
+
+    .kpi-sub {
+      font-size: 12.5px;
+      color: #b4cadf;
+      line-height: 1.55
+    }
+
+    .kpi-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .heart-beat {
+      display: inline-block;
+      color: var(--red);
+      animation: beat 1s infinite
+    }
+
+    @keyframes beat {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      25% {
+        transform: scale(1.18)
+      }
+    }
+
+    .probs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px
+    }
+
+    .prob-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #0d1a26;
+      border: 1px solid #233c52;
+      color: #9cc2db
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 22px 0 12px
+    }
+
+    .tab-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .tab-btn.active {
+      background: #18344c;
+      border-color: #4fb6db;
+      color: #fff
+    }
+
+    .tab-pane {
+      display: none
+    }
+
+    .tab-pane.active {
+      display: block
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px
+    }
+
+    .field-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    input[type=text],
+    input[type=number],
+    input[type=url] {
+      font: inherit;
+      font-size: 13px;
+      background: #09131e;
+      color: var(--text);
+      border: 1px solid #2c4a62;
+      border-radius: 8px;
+      padding: 9px 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--teal)
+    }
+
+    #espHost,
+    #webhookUrl {
+      flex: 1;
+      min-width: 220px
+    }
+
+    #espPort,
+    #fallThreshold {
+      width: 95px
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: #132b3b;
+      border: 1px solid #3f6d82;
+      color: #9cebe0;
+      cursor: pointer;
+    }
+
+    .check-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #c7dbed
+    }
+
+    .check-row label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer
+    }
+
+    .log-list {
+      max-height: 210px;
+      overflow: auto;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: #b7cde0
+    }
+
+    .log-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      padding: 4px 0
+    }
+
+    .log-time {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap
+    }
+
+    .progress {
+      height: 7px;
+      background: #0a1622;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+      border: 1px solid #21374a
+    }
+
+    .progress>div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+      transition: width .25s
+    }
+
+    canvas {
+      width: 100%;
+      height: 150px;
+      display: block;
+      margin-top: 6px
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .err-box {
+      color: #ffc18d;
+      font-size: 12.5px;
+      white-space: pre-wrap;
+      margin-top: 8px
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 0 0 12px;
+      font-weight: 600
+    }
+
+    @media(max-width:1020px) {
+      .hero-grid {
+        grid-template-columns: 1fr
+      }
+
+      .two-col {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:660px) {
+      .wrap {
+        padding: 14px
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr
+      }
+
+      .kpi-val {
+        font-size: 30px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div>
+        <div class="brand-eyebrow">CSI Smart Care · Wi-Fi Human Sensing</div>
+        <div class="brand-title">แดชบอร์ดแสดงผลลัพธ์ผู้พักอาศัย &amp; แจ้งเตือนฉุกเฉิน</div>
+        <div class="brand-sub">CSI Motion Observatory · วิเคราะห์การมีคน ท่าทาง ชีพจรประมาณการ และการแจ้งเตือนขึ้น Cloud
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="pill"><span class="dot" id="modeDot"></span><span id="modeBadge">กำลังเชื่อมต่อ...</span></div>
+        <button id="btnAutoConnect" class="btn-teal">🔍 ค้นหา &amp; ต่ออัตโนมัติ</button>
+        <button id="btnToggleSetup">⚙️ ตั้งค่า / คาลิเบรต</button>
+        <button id="btnTestFall" class="btn-danger">🚨 ทดสอบเตือนล้ม</button>
+      </div>
+    </header>
+
+    <div class="alert-banner" id="fallBanner">
+      <div>
+        <div class="alert-title">⚠️ แจ้งเตือนฉุกเฉิน: ตรวจพบเหตุสงสัยการล้ม!</div>
+        <div class="alert-sub" id="fallBannerDetail">—</div>
+      </div>
+      <div class="field-row">
+        <label class="small" style="color:#ffd9e0;display:flex;align-items:center;gap:6px"><input type="checkbox"
+            id="soundToggle" checked> เสียงเตือน</label>
+        <button id="btnAckFall" class="btn-teal">✓ รับทราบ / ปลอดภัยแล้ว</button>
+      </div>
+    </div>
+
+    <div class="setup-banner" id="setupBanner">
+      <span id="setupBannerText">ยังไม่ได้เชื่อมต่อหรือคาลิเบรตพื้นที่</span>
+      <div class="field-row">
+        <button id="btnBannerAuto" class="btn-teal">🔍 ค้นหา ESP32 อัตโนมัติ</button>
+        <button id="btnBannerCal" class="btn-teal" style="display:none">เริ่มคาลิเบรตห้องนิ่ง 10 วินาที</button>
+        <button id="btnOpenSetup" class="btn-ghost">เปิดแท็บตั้งค่า</button>
+      </div>
+    </div>
+
+    <div class="notice-bar">
+      <span id="noticeText">รอรับข้อมูลจริงจากบอร์ด ESP32 ผ่าน Wi-Fi LAN (พอร์ต 9000)</span>
+      <span class="small" id="connChip">สถานะเครือข่าย: —</span>
+    </div>
+
+    <section class="hero-grid">
+      <div class="panel stage-card">
+        <div>
+          <div class="kpi-head">
+            <span class="kpi-label">ภาพจำลองสถานะในห้อง</span>
+            <span class="badge" id="stageBadge">WAITING</span>
+          </div>
+          <div class="stage-visual" id="stageVisual">
+            <div class="halo" id="halo"></div>
+            <div class="halo-inner"></div>
+            <svg id="poseSvg" viewBox="0 0 160 160" fill="none" aria-label="สถานะท่าทาง"></svg>
+          </div>
+          <div class="stage-state" id="stageTitle">รอสัญญาณ CSI</div>
+          <div class="stage-desc" id="stageDesc">เชื่อมต่อบอร์ด ESP32 เพื่อเริ่มวิเคราะห์สัญญาณจริงในพื้นที่</div>
+        </div>
+        <div class="stage-meta">
+          <span>RSSI: <strong id="metaRssi">—</strong> dBm</span>
+          <span>อัตราเฟรม: <strong id="metaRate">0</strong> Hz</span>
+          <span>รับแล้ว: <strong id="metaCount">0</strong></span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <article class="panel kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">1. การตรวจพบคน (Occupancy)</span>
+            <span class="badge" id="occBadge">รอข้อมูล</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-val" id="occValue">—</span>
+            <span class="kpi-unit" id="occUnit">คน</span>
+          </div>
+          <div class="kpi-sub" id="occSub">รอการคาลิเบรตหรือรอสัญญาณจากบอร์ด ESP32</div>
+          <div class="kpi-foot">
+            <span>ความเปลี่ยนแปลงสัญญาณ: <strong id="occEnergy">0.000</strong></span>
+            <button id="btnQuickResetCal" class="btn-ghost" style="padding:4px 9px;font-size:11.5px">🔄
+              รีเซ็ตค่าห้องนิ่ง</button>
+          </div>
+        </article>
+
+        <article class="panel kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">2. ท่าทาง / กิจกรรม (Posture)</span>
+            <span class="badge" id="poseBadge">ไม่มีโมเดล</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-val" id="poseValue" style="font-size:28px">รอวิเคราะห์</span>
+          </div>
+          <div class="kpi-sub" id="poseSub">แสดงผลจากโมเดล ML (หากโหลดไว้) หรือประเมินจากรูปแบบแรงสัญญาณ CSI</div>
+          <div class="probs" id="poseProbs"></div>
+          <div class="kpi-foot">
+            <span id="poseSrcFoot">แหล่งวิเคราะห์: —</span>
+            <span id="poseModelFoot">ML: DISABLED</span>
+          </div>
+        </article>
+
+        <article class="panel kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">3. ชีพจร &amp; การหายใจ (Vitals)</span>
+            <span class="badge warn" id="vitalBadge">Experimental</span>
+          </div>
+          <div class="kpi-main">
+            <span class="heart-beat" id="heartIcon" style="opacity:.25">♥</span>
+            <span class="kpi-val" id="hrValue">--</span>
+            <span class="kpi-unit">BPM</span>
+            <span class="kpi-unit" style="margin-left:10px">หายใจ <strong id="rrValue"
+                style="color:var(--text)">--</strong> /นาที</span>
+          </div>
+          <div class="kpi-sub" id="vitalSub">ต้องอยู่นิ่งและมีอัตราเฟรม ≥ 8 Hz ต่อเนื่อง 6–10 วินาที</div>
+          <div class="kpi-foot">
+            <span>ความถี่ตัวอย่าง: <strong id="vitalHz">0.0 Hz</strong></span>
+            <span>วิเคราะห์คาบ FFT (ไม่ใช่ค่าแพทย์)</span>
+          </div>
+        </article>
+
+        <article class="panel kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-label">4. การแจ้งเตือนล้ม &amp; Cloud Alert</span>
+            <span class="badge" id="cloudBadge">ยังไม่ตั้ง Webhook</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-val" id="fallStateValue" style="font-size:28px">สถานะปกติ</span>
+          </div>
+          <div class="kpi-sub" id="cloudSub">เมื่อตรวจพบการล้ม ระบบจะเตือนหน้าจอและยิง Webhook ขึ้น Cloud อัตโนมัติ
+            (เมื่อตั้งค่า URL)</div>
+          <div class="kpi-foot">
+            <button id="btnGoCloud" class="btn-ghost" style="padding:5px 10px;font-size:12px">ตั้งค่า Cloud
+              Webhook</button>
+            <span id="cloudLastLog">ยังไม่มีประวัติส่ง</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="events">ประวัติเหตุการณ์ &amp; การส่งขึ้น Cloud</button>
+      <button class="tab-btn" data-tab="setup" id="tabSetupBtn">เชื่อมต่อ Wi-Fi · คาลิเบรต · Cloud &amp;
+        กราฟดิบ</button>
+    </div>
+
+    <section class="tab-pane active" id="pane-events">
+      <div class="two-col">
+        <div class="panel">
+          <h2>บันทึกเหตุการณ์ในพื้นที่ (Timeline)</h2>
+          <div class="log-list" id="eventsList">ยังไม่มีเหตุการณ์</div>
+          <div class="err-box" id="errorBox"></div>
+        </div>
+        <div class="panel">
+          <h2>ประวัติการส่งแจ้งเตือนขึ้น Cloud Webhook</h2>
+          <div class="log-list" id="cloudLogs">ยังไม่มีการส่งแจ้งเตือนขึ้น Cloud</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="pane-setup">
+      <div class="two-col" style="margin-bottom:16px">
+        <div class="panel">
+          <h2>เชื่อมต่อ ESP32 ผ่าน Wi-Fi (LAN IP / ค้นหาอัตโนมัติ)</h2>
+          <div class="field-row" style="margin-bottom:10px">
+            <input id="espHost" type="text" placeholder="csi-radar.local หรือ IP จาก Serial Monitor">
+            <input id="espPort" type="number" min="1" max="65535" value="9000" title="TCP Port">
+            <button id="connectBtn" class="btn-teal">เชื่อมต่อ</button>
+            <button id="scanBtn">สแกนหาใน LAN</button>
+            <button id="disconnectBtn" class="btn-ghost">ตัดการเชื่อมต่อ</button>
+          </div>
+          <p class="small" id="connInfo">พร้อมเชื่อมต่อ ESP32 (พอร์ต 9000)</p>
+          <div class="chips" id="scanResults"></div>
+          <p class="small" style="margin-top:10px">บอร์ดจะเกาะ Wi-Fi ชื่อ <code>korn</code> (หรือ <code>Korn</code>)
+            และเปิด TCP Server พอร์ต <code>9000</code></p>
+        </div>
+
+        <div class="panel">
+          <h2>คาลิเบรตห้องนิ่ง &amp; ตั้งค่าตรวจจับการล้ม / Cloud Webhook</h2>
+          <div class="field-row" style="margin-bottom:12px">
+            <button id="calibrateBtn" class="btn-teal">คาลิเบรตห้องนิ่ง 10 วินาที</button>
+            <button id="resetCalBtn" class="btn-ghost">🔄 รีเซ็ตค่าห้องนิ่ง</button>
+            <a class="btn" href="/api/export" download="csi-recording.csv">ดาวน์โหลด CSV</a>
+            <span class="small" id="calInfo">Threshold: —</span>
+          </div>
+          <div class="progress">
+            <div id="calBar"></div>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
+          <div class="field-row">
+            <input id="webhookUrl" type="url"
+              placeholder="Cloud Webhook URL (เช่น Discord, ntfy.sh/topic, Google Apps Script)">
+            <input id="fallThreshold" type="number" step="0.05" min="0.1" max="5" value="0.40"
+              title="Fall spike threshold">
+            <button id="saveCloudBtn" class="btn-teal">บันทึก</button>
+          </div>
+          <div class="check-row">
+            <label><input type="checkbox" id="autoCloudChk" checked> ส่งขึ้น Cloud อัตโนมัติเมื่อล้ม</label>
+            <label><input type="checkbox" id="fallAutoChk" checked> เปิดตรวจจับแรงกระแทกฉับพลัน</label>
+          </div>
+          <p class="small" id="cloudConfigStatus" style="margin-top:8px">Webhook: ยังไม่ได้ตั้งค่า</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <h2>สัญญาณ Motion energy / Threshold (มุมมองวิศวกร)</h2>
+          <canvas id="motionChart" width="660" height="165"></canvas>
+          <p class="small">เส้นเขียวมิ้นต์: แรงเปลี่ยนแปลง CSI · เส้นประส้ม: เกณฑ์คาลิเบรต · เส้นประแดง:
+            เกณฑ์สงสัยการล้ม</p>
+        </div>
+        <div class="panel">
+          <h2>CSI Subcarrier Amplitude เฟรมล่าสุด</h2>
+          <canvas id="ampChart" width="660" height="165"></canvas>
+          <p class="small" id="rawStats">Frames: 0 · Invalid: 0 · อายุข้อมูล: —</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const el = id => document.getElementById(id);
+    let busy = false;
+    let audioCtx = null;
+    let lastBeepAt = 0;
+
+    const savedHost = localStorage.getItem('csi_esp_host');
+    el('espHost').value = savedHost || 'csi-radar.local';
+    const savedWebhook = localStorage.getItem('csi_webhook_url');
+    if (savedWebhook) el('webhookUrl').value = savedWebhook;
+    const savedAutoCloud = localStorage.getItem('csi_auto_cloud');
+    if (savedAutoCloud !== null) el('autoCloudChk').checked = savedAutoCloud === 'true';
+
+    let hostDirty = false;
+    let webhookSynced = false;
+    el('espHost').oninput = () => { hostDirty = true; };
+    el('espPort').oninput = () => { hostDirty = true; };
+
+    function openTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + name));
+    }
+    document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => openTab(b.dataset.tab));
+    el('btnToggleSetup').onclick = () => {
+      const isSetup = el('pane-setup').classList.contains('active');
+      openTab(isSetup ? 'events' : 'setup');
+    };
+    el('btnOpenSetup').onclick = () => openTab('setup');
+    el('btnGoCloud').onclick = () => { openTab('setup'); el('webhookUrl').focus(); };
+
+    async function postJson(url, action, payload) {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSI-Action': action },
+        body: JSON.stringify(payload || {})
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw Error(data.error || ('Request failed (' + r.status + ')'));
+      return data;
+    }
+
+    function playBeep() {
+      if (!el('soundToggle').checked) return;
+      const now = Date.now();
+      if (now - lastBeepAt < 2500) return;
+      lastBeepAt = now;
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.value = 0.08;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.18);
+      } catch (_) { }
+    }
+
+    function drawChart(id, values, threshold, fallThreshold) {
+      const c = el(id), ctx = c.getContext('2d'), w = c.width, h = c.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#1f3447';
+      ctx.lineWidth = 1;
+      for (let y = 20; y < h; y += 36) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+      if (!values.length) return;
+      const maxVal = Math.max(...values, threshold || 0, fallThreshold || 0, 0.001) * 1.15;
+      ctx.strokeStyle = '#57e3c3';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      values.forEach((v, i) => {
+        const x = i * w / Math.max(values.length - 1, 1);
+        const y = h - 10 - (v / maxVal) * (h - 24);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke();
+      if (threshold) {
+        const y = h - 10 - (threshold / maxVal) * (h - 24);
+        ctx.setLineDash([6, 5]); ctx.strokeStyle = '#fbbf58';
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (fallThreshold) {
+        const y = h - 10 - (fallThreshold / maxVal) * (h - 24);
+        ctx.setLineDash([4, 4]); ctx.strokeStyle = '#ff667a';
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    function poseSvgMarkup(pose) {
+      if (pose === 'FALL') {
+        return '<circle cx="42" cy="108" r="14" stroke="#ff667a" stroke-width="5" fill="#4f1826"/>' +
+          '<path d="M56 112 L106 112 L134 128 M76 112 L94 90 M106 112 L132 104" stroke="#ff667a" stroke-width="6" stroke-linecap="round"/>' +
+          '<line x1="22" y1="136" x2="142" y2="136" stroke="#ff667a" stroke-width="2" stroke-dasharray="4 4"/>';
+      }
+      if (pose === 'WALK' || pose === 'MOVING' || pose === 'WAVE') {
+        const waveArm = pose === 'WAVE' ? 'M80 62 L114 38' : 'M80 62 L108 82';
+        return '<circle cx="80" cy="36" r="14" stroke="#57e3c3" stroke-width="5" fill="#133d3a"/>' +
+          '<path d="M80 50 L80 94 M80 62 L52 80 ' + waveArm + ' M80 94 L58 134 M80 94 L104 134" stroke="#57e3c3" stroke-width="6" stroke-linecap="round"/>';
+      }
+      if (pose === 'SIT' || pose === 'QUIET') {
+        return '<circle cx="74" cy="42" r="13" stroke="#58b8ff" stroke-width="5" fill="#12304a"/>' +
+          '<path d="M74 55 L74 96 L106 96 L112 132 M74 68 L98 84 M56 108 L108 108" stroke="#58b8ff" stroke-width="6" stroke-linecap="round"/>';
+      }
+      if (pose === 'STAND') {
+        return '<circle cx="80" cy="34" r="13" stroke="#57e3c3" stroke-width="5" fill="#133d3a"/>' +
+          '<path d="M80 47 L80 96 M80 62 L60 88 M80 62 L100 88 M80 96 L68 136 M80 96 L92 136" stroke="#57e3c3" stroke-width="6" stroke-linecap="round"/>';
+      }
+      return '<circle cx="80" cy="80" r="26" stroke="#6d8ba3" stroke-width="4" stroke-dasharray="6 5"/>' +
+        '<circle cx="80" cy="80" r="6" fill="#6d8ba3"/>';
+    }
+
+    const POSE_THAI = {
+      FALL: ['สงสัยเหตุการล้ม!', 'ตรวจพบความเปลี่ยนแปลงฉับพลันระดับสูง หรือโมเดลระบุท่าล้ม'],
+      WALK: ['กำลังเดิน / เคลื่อนไหวมาก', 'ตรวจพบการเคลื่อนไหวต่อเนื่องในพื้นที่'],
+      MOVING: ['ขยับตัว / เปลี่ยนท่าทาง', 'ตรวจพบความเคลื่อนไหวระดับปานกลางในพื้นที่'],
+      STAND: ['ยืนอยู่กับที่', 'จำแนกท่าทางจากโมเดล ML'],
+      SIT: ['นั่งพัก', 'จำแนกท่าทางจากโมเดล ML'],
+      WAVE: ['กำลังโบกมือ / ส่งสัญญาณ', 'จำแนกท่าทางจากโมเดล ML'],
+      EMPTY: ['ห้องว่าง / ไม่พบคน', 'จำแนกจากโมเดล ML'],
+      QUIET: ['นิ่ง (นั่งพัก หรือไม่มีคน)', 'ไม่พบการเคลื่อนไหวเกินเกณฑ์ที่คาลิเบรตไว้'],
+      CALIBRATING: ['กำลังคาลิเบรตห้องนิ่ง...', 'โปรดออกจากพื้นที่และงดเคลื่อนไหวชั่วคราว'],
+      UNCALIBRATED: ['รอคาลิเบรตพื้นที่', 'กดปุ่มคาลิเบรตห้องนิ่ง 10 วินาทีเพื่อสร้างเกณฑ์ห้องของคุณ'],
+      OFFLINE: ['รอสัญญาณ CSI', 'เชื่อมต่อ ESP32 ผ่าน Wi-Fi เพื่อเริ่มวิเคราะห์ข้อมูลจริง']
+    };
+
+    async function connectTcp() {
+      const host = el('espHost').value.trim();
+      const port = Number(el('espPort').value || 9000);
+      if (!host) {
+        el('connInfo').textContent = 'กรุณากรอก IP ของ ESP32 หรือ csi-radar.local ก่อนกดเชื่อมต่อ';
+        el('espHost').focus();
+        return;
+      }
+      localStorage.setItem('csi_esp_host', host);
+      hostDirty = false;
+      el('connInfo').textContent = 'กำลังเชื่อมต่อไปที่ ' + host + ':' + port + ' ...';
+      try {
+        await postJson('/api/connect', 'connect', { mode: 'tcp', host, port });
+        await update();
+      } catch (e) {
+        el('connInfo').textContent = e.message;
+      }
+    }
+
+    async function scanLan() {
+      const btn = el('scanBtn');
+      const port = Number(el('espPort').value || 9000);
+      btn.disabled = true;
+      el('connInfo').textContent = 'กำลังสแกนหา ESP32 (พอร์ต ' + port + ') ในวง LAN...';
+      el('scanResults').replaceChildren();
+      try {
+        const data = await postJson('/api/scan', 'scan', { port });
+        const hosts = data.hosts || [];
+        if (!hosts.length) {
+          el('connInfo').textContent = 'ไม่พบ ESP32 พอร์ต ' + port + ' ในวง LAN — ตรวจว่าต่อ Wi-Fi เดียวกัน หรือพิมพ์ IP จาก Serial Monitor';
+          return;
+        }
+        el('connInfo').textContent = 'พบอุปกรณ์ (' + hosts.length + ') คลิกเพื่อเชื่อมต่อ:';
+        el('scanResults').replaceChildren(...hosts.map(item => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'chip';
+          b.textContent = item.label;
+          b.onclick = () => { el('espHost').value = item.host; el('espPort').value = item.port; connectTcp(); };
+          return b;
+        }));
+      } catch (e) {
+        el('connInfo').textContent = e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function saveCloudConfig(silent) {
+      const webhook_url = el('webhookUrl').value.trim();
+      const auto_cloud = el('autoCloudChk').checked;
+      const fall_auto = el('fallAutoChk').checked;
+      const fall_threshold = Number(el('fallThreshold').value || 0.4);
+      localStorage.setItem('csi_webhook_url', webhook_url);
+      localStorage.setItem('csi_auto_cloud', String(auto_cloud));
+      try {
+        await postJson('/api/alert/config', 'alert-config', { webhook_url, auto_cloud, fall_auto, fall_threshold });
+        if (!silent) el('cloudConfigStatus').textContent = webhook_url ? 'บันทึก Cloud Webhook แล้ว' : 'ล้าง Webhook แล้ว (แจ้งเตือนเฉพาะหน้าจอ)';
+        await update();
+      } catch (e) {
+        el('cloudConfigStatus').textContent = e.message;
+      }
+    }
+
+    function renderList(targetEl, items, mapper, emptyText) {
+      if (!items || !items.length) {
+        targetEl.textContent = emptyText;
+        return;
+      }
+      targetEl.replaceChildren(...items.map(mapper));
+    }
+
+    function renderState(s) {
+      const dot = el('modeDot');
+      dot.className = 'dot ' + (s.fall_alert ? 'danger' : (s.mode === 'tcp' && s.link_up ? 'live' : 'warn'));
+      el('modeBadge').textContent = s.mode === 'idle' ? 'STANDBY · ยังไม่ต่อบอร์ด' : 'LIVE · ESP32 (' + (s.target || s.source || s.mode.toUpperCase()) + ')';
+
+      el('noticeText').textContent = s.mode === 'idle'
+        ? 'ยังไม่เชื่อมต่อ ESP32 — กด "ค้นหา & ต่ออัตโนมัติ" หรือกรอก IP ของบอร์ดในแท็บตั้งค่า'
+        : (!s.link_up
+          ? 'กำลังเชื่อมต่อ ' + (s.target || 'ESP32') + (s.error ? ' — ' + s.error : ' ... (กด "ค้นหา & ต่ออัตโนมัติ" ได้หาก IP เปลี่ยน)')
+          : 'รับข้อมูลจริงจาก ' + (s.source || s.target || 'ESP32') + ' · ค่าชีพจรเป็นการประมาณจากคาบ FFT ไม่ใช่เครื่องมือแพทย์');
+
+      if (s.mode === 'tcp' && s.target) {
+        el('connChip').textContent = s.link_up
+          ? (s.status === 'DISCONNECTED' ? 'TCP เชื่อมแล้ว (รอเฟรม CSI)' : 'TCP ปกติ · ' + s.target)
+          : 'กำลังเชื่อม ' + s.target;
+      } else {
+        el('connChip').textContent = s.mode === 'idle' ? 'รอเชื่อมต่อ' : s.mode.toUpperCase();
+      }
+
+      // Fall Banner
+      el('fallBanner').classList.toggle('show', Boolean(s.fall_alert));
+      if (s.fall_alert) {
+        el('fallBannerDetail').textContent = 'เวลา ' + (s.fall_at || '—') + ' · สาเหตุ: ' + (s.fall_reason || 'ตรวจพบการล้ม');
+        playBeep();
+      }
+
+      // Setup prompt banner when idle or uncalibrated
+      const needSetup = s.mode === 'idle' || (s.status === 'UNCALIBRATED' && s.count > 0);
+      el('setupBanner').classList.toggle('show', needSetup);
+      if (s.mode === 'idle') {
+        el('setupBannerText').textContent = 'ยังไม่เชื่อมต่อบอร์ด ESP32 — กด "🔍 ค้นหา ESP32 อัตโนมัติ" หรือกรอก IP (เช่น csi-radar.local) เพื่อต่อบอร์ดจริง';
+        el('btnBannerCal').style.display = 'none';
+        el('btnBannerAuto').style.display = 'inline-block';
+      } else if (s.status === 'UNCALIBRATED') {
+        el('setupBannerText').textContent = 'รับสัญญาณจาก ESP32 แล้ว (' + s.count + ' เฟรม) — แนะนำให้ออกจากพื้นที่แล้วกด "คาลิเบรตห้องนิ่ง 10 วินาที" เพื่อให้ระบบแม่นยำ';
+        el('btnBannerCal').style.display = 'inline-block';
+        el('btnBannerAuto').style.display = 'none';
+      }
+
+      // Stage visual & pose
+      const pose = s.posture || 'OFFLINE';
+      const [poseTitle, poseDesc] = POSE_THAI[pose] || [pose, ''];
+      el('stageTitle').textContent = poseTitle;
+      el('stageDesc').textContent = poseDesc;
+      el('stageBadge').textContent = s.fall_alert ? 'ALERT' : s.status;
+      el('stageBadge').className = 'badge ' + (s.fall_alert ? 'danger' : (s.motion ? 'good' : (s.status === 'CALIBRATING' ? 'warn' : '')));
+      el('stageVisual').className = 'stage-visual ' + (s.fall_alert ? 'state-fall' : (s.motion ? 'state-motion' : ''));
+      el('poseSvg').innerHTML = poseSvgMarkup(pose);
+      const scale = Math.min(1.55, 0.8 + s.energy / Math.max(s.threshold || 0.01, 0.01) * 0.25);
+      el('halo').style.transform = 'scale(' + scale.toFixed(2) + ')';
+      el('halo').style.borderColor = s.fall_alert ? 'rgba(255,102,122,.75)' : (s.motion ? 'rgba(87,227,195,.7)' : 'rgba(88,184,255,.35)');
+      el('metaRssi').textContent = s.rssi ?? '—';
+      el('metaRate').textContent = s.rate ?? 0;
+      el('metaCount').textContent = s.count ?? 0;
+
+      // KPI 1: Occupancy
+      el('occValue').textContent = s.people_label || '—';
+      el('occUnit').textContent = s.people_label === '—' ? '' : 'คน';
+      el('occEnergy').textContent = s.energy.toFixed(4);
+      if (s.occupancy === 'PRESENT') {
+        el('occBadge').textContent = 'พบบุคคล';
+        el('occBadge').className = 'badge good';
+        el('occSub').textContent = 'ตรวจพบการรบกวนคลื่น Wi-Fi เกินเกณฑ์ห้องนิ่ง (คาดว่ามีอย่างน้อย 1 คนในพื้นที่)';
+      } else if (s.occupancy === 'EMPTY') {
+        el('occBadge').textContent = 'ไม่พบเคลื่อนไหว';
+        el('occBadge').className = 'badge';
+        el('occSub').textContent = 'สัญญาณนิ่งต่ำกว่าเกณฑ์ (ห้องว่าง หรือมีคนนั่ง/นอนนิ่งอยู่)';
+      } else {
+        el('occBadge').textContent = s.status;
+        el('occBadge').className = 'badge warn';
+        el('occSub').textContent = s.status === 'CALIBRATING' ? 'กำลังเก็บค่าพื้นฐานห้องนิ่งอีก ' + s.calibration_left + ' วินาที...' : 'ต้องเชื่อมต่อและคาลิเบรตห้องนิ่งก่อนประเมินจำนวนบุคคล';
+      }
+
+      // KPI 2: Posture
+      el('poseValue').textContent = poseTitle;
+      const srcMap = { ml_model: ['โมเดล ML', 'good'], heuristic: ['สัญญาณ CSI', 'warn'], none: ['รอข้อมูล', ''] };
+      const [srcLabel, srcCls] = srcMap[s.posture_source || 'none'] || ['สัญญาณ CSI', 'warn'];
+      el('poseBadge').textContent = srcLabel;
+      el('poseBadge').className = 'badge ' + srcCls;
+      el('poseSub').textContent = poseDesc;
+      el('poseSrcFoot').textContent = 'แหล่งวิเคราะห์: ' + srcLabel;
+      el('poseModelFoot').textContent = 'ML: ' + s.activity;
+      el('poseProbs').replaceChildren(...Object.entries(s.probabilities || {}).map(([k, v]) => {
+        const span = document.createElement('span');
+        span.className = 'prob-tag';
+        span.textContent = k + ' ' + Math.round(v * 100) + '%';
+        return span;
+      }));
+
+      // KPI 3: Vitals
+      el('hrValue').textContent = s.hr_bpm !== null && s.hr_bpm !== undefined ? String(s.hr_bpm) : '--';
+      el('rrValue').textContent = s.rr_bpm !== null && s.rr_bpm !== undefined ? String(s.rr_bpm) : '--';
+      el('vitalHz').textContent = (s.sample_hz || 0).toFixed(1) + ' Hz';
+      el('heartIcon').style.opacity = s.hr_bpm ? '1' : '.25';
+      const vitalMsgs = {
+        ACTIVE: ['คาบสัญญาณพร้อม', 'good', 'ประมาณการจากความแปรผันรายคาบช่วงนิ่ง (ค่าทดลอง ไม่ใช่ผลตรวจทางการแพทย์)'],
+        COLLECTING: ['กำลังสะสม 6–10s', 'warn', 'กำลังสะสมช่วงข้อมูลนิ่งต่อเนื่องอย่างน้อย 6 วินาทีก่อนคำนวณ FFT'],
+        MOTION_INTERFERENCE: ['มีเคลื่อนไหว', 'warn', 'ผู้พักอาศัยกำลังขยับ/เดิน สัญญาณการเคลื่อนไหวกลบคลื่นหน้าอกชั่วคราว'],
+        LOW_RATE: ['ความถี่ < 8 Hz', 'warn', 'อัตราสัญญาณจาก Wi-Fi ตอนนี้ (' + (s.sample_hz || 0).toFixed(1) + ' Hz) ต่ำกว่า 8 Hz จึงยังไม่พอประมาณชีพจร'],
+        WEAK_SIGNAL: ['ไม่พบคาบชัด', '', 'สัญญาณช่วงนิ่งมีความรบกวนสูง ยังไม่พบความถี่คาบที่ชัดเจน'],
+        OFFLINE: ['ออฟไลน์', '', 'รอสัญญาณจากเซนเซอร์']
+      };
+      const [vbTxt, vbCls, vbDesc] = vitalMsgs[s.vitals_status || 'OFFLINE'] || ['Experimental', 'warn', ''];
+      el('vitalBadge').textContent = vbTxt;
+      el('vitalBadge').className = 'badge ' + vbCls;
+      el('vitalSub').textContent = vbDesc;
+
+      // KPI 4: Fall & Cloud
+      el('fallStateValue').textContent = s.fall_alert ? '⚠️ สงสัยการล้ม!' : 'ปกติ (เฝ้าระวัง)';
+      el('fallStateValue').style.color = s.fall_alert ? '#ff8da0' : '#f3f9ff';
+      el('cloudBadge').textContent = s.webhook_configured ? (s.auto_cloud ? 'Cloud พร้อมส่งอัตโนมัติ' : 'ตั้งค่า Webhook แล้ว') : 'ยังไม่ตั้ง Webhook';
+      el('cloudBadge').className = 'badge ' + (s.fall_alert ? 'danger' : (s.webhook_configured ? 'good' : 'warn'));
+      el('cloudSub').textContent = s.webhook_configured
+        ? 'ปลายทาง: ' + (s.webhook_url_preview || 'ตั้งค่าแล้ว') + ' · เกณฑ์กระแทก ≥ ' + Number(s.fall_threshold || 0.4).toFixed(2)
+        : 'แจ้งเตือนเฉพาะหน้าจอ — ใส่ Cloud Webhook URL ในแท็บตั้งค่าเพื่อส่งเข้ามือถือ/Cloud';
+      el('cloudLastLog').textContent = (s.alert_logs && s.alert_logs.length)
+        ? 'ล่าสุด ' + s.alert_logs[0].time + ': ' + s.alert_logs[0].status
+        : 'ยังไม่มีประวัติส่ง';
+
+      // Sync setup inputs safely if not being edited
+      if (s.mode === 'tcp' && s.target && (!el('espHost').value || (!hostDirty && s.link_up)) && document.activeElement !== el('espHost')) {
+        const [h, p] = s.target.split(':');
+        el('espHost').value = h;
+        if (p) el('espPort').value = p;
+      }
+      if (document.activeElement !== el('fallThreshold') && s.fall_threshold) {
+        el('fallThreshold').value = Number(s.fall_threshold).toFixed(2);
+      }
+      if (s.mode === 'tcp' && s.target) {
+        el('connInfo').textContent = s.link_up
+          ? (s.status === 'DISCONNECTED' ? 'เชื่อมต่อ TCP กับ ' + s.target + ' แล้ว — กำลังรอเฟรม CSI จาก Wi-Fi' : 'เชื่อมต่ออยู่กับ ' + s.target)
+          : 'กำลังเชื่อมต่อไปที่ ' + s.target + (s.error ? ' (' + s.error + ')' : '');
+      }
+      el('calInfo').textContent = s.calibration_left
+        ? 'กำลังคาลิเบรต เหลือ ' + s.calibration_left + ' วินาที — ห้ามเคลื่อนไหวในพื้นที่'
+        : 'Threshold: ' + s.threshold.toFixed(4) + (s.calibrated ? ' (คาลิเบรตแล้ว)' : ' (ยังไม่ได้คาลิเบรต)');
+      el('calBar').style.width = s.calibration_left ? ((10 - s.calibration_left) * 10) + '%' : (s.calibrated ? '100%' : '0%');
+      el('cloudConfigStatus').textContent = s.webhook_configured
+        ? 'เชื่อมต่อ Cloud Webhook: ' + (s.webhook_url_preview || '')
+        : 'Webhook: ยังไม่ได้ตั้งค่า';
+
+      // Lists & raw charts
+      renderList(el('eventsList'), s.events, item => {
+        const row = document.createElement('div');
+        row.className = 'log-item';
+        const left = document.createElement('span'); left.textContent = item.event;
+        const right = document.createElement('span'); right.className = 'log-time'; right.textContent = item.time;
+        row.append(left, right);
+        return row;
+      }, 'ยังไม่มีเหตุการณ์');
+
+      renderList(el('cloudLogs'), s.alert_logs, item => {
+        const row = document.createElement('div');
+        row.className = 'log-item';
+        const left = document.createElement('span'); left.textContent = item.event + ' → ' + (item.target || 'Cloud') + ' [' + item.status + ']';
+        const right = document.createElement('span'); right.className = 'log-time'; right.textContent = item.time;
+        row.append(left, right);
+        return row;
+      }, 'ยังไม่มีการส่งแจ้งเตือนขึ้น Cloud');
+
+      el('errorBox').textContent = [s.error, s.model_error].filter(Boolean).join('\n');
+      el('rawStats').textContent = 'Frames: ' + s.count + ' · Invalid: ' + s.invalid + ' · อายุข้อมูล: ' + (s.age ?? '—') + ' s';
+
+      if (el('pane-setup').classList.contains('active')) {
+        drawChart('motionChart', (s.history || []).map(x => x.energy), s.threshold, s.fall_threshold);
+        drawChart('ampChart', s.amplitudes || []);
+      }
+
+      if (!webhookSynced && savedWebhook && !s.webhook_configured) {
+        webhookSynced = true;
+        saveCloudConfig(true);
+      }
+    }
+
+    async function update() {
+      if (busy) return;
+      if (typeof location !== 'undefined' && location.protocol === 'file:') {
+        el('modeDot').className = 'dot danger';
+        el('modeBadge').textContent = 'เปิดไฟล์ผิดวิธี';
+        el('noticeText').textContent = 'กรุณาเปิดผ่าน http://127.0.0.1:8765 (ห้ามเปิดไฟล์ index.html โดยตรง)';
+        return;
+      }
+      busy = true;
+      try {
+        const fetchOpts = (typeof AbortSignal !== 'undefined' && AbortSignal.timeout)
+          ? { signal: AbortSignal.timeout(2000) }
+          : {};
+        const r = await fetch('/api/state', fetchOpts);
+        if (!r.ok) throw Error('HTTP ' + r.status);
+        renderState(await r.json());
+      } catch (e) {
+        el('modeDot').className = 'dot danger';
+        el('modeBadge').textContent = 'BACKEND OFFLINE';
+        el('errorBox').textContent = String(e);
+      } finally {
+        busy = false;
+      }
+    }
+
+    async function runAction(fn) {
+      try {
+        await fn();
+        await update();
+      } catch (e) {
+        el('errorBox').textContent = e.message || String(e);
+      }
+    }
+
+      async function autoConnectEsp() {
+        const btns = [el('btnAutoConnect'), el('btnBannerAuto')];
+        const port = Number(el('espPort').value || 9000);
+        btns.forEach(b => { if (b) b.disabled = true; });
+        el('connInfo').textContent = 'กำลังสแกนหา ESP32 ในวง Wi-Fi (พอร์ต ' + port + ')...';
+        try {
+          const data = await postJson('/api/autoconnect', 'autoconnect', { port });
+          if (data.connected && data.target) {
+            const host = data.target.split(':')[0];
+            el('espHost').value = host;
+            localStorage.setItem('csi_esp_host', host);
+            hostDirty = false;
+            el('connInfo').textContent = 'พบและเชื่อมต่ออัตโนมัติกับ ' + data.target;
+          } else {
+            openTab('setup');
+            el('connInfo').textContent = 'ไม่พบ ESP32 พอร์ต ' + port + ' ในวง Wi-Fi — ตรวจว่าต่อ Hotspot ชื่อ korn/Korn และเสียบไฟเลี้ยงบอร์ดแล้ว';
+          }
+          await update();
+        } catch (e) {
+          el('errorBox').textContent = e.message || String(e);
+        } finally {
+          btns.forEach(b => { if (b) b.disabled = false; });
+        }
+      }
+
+      el('connectBtn').onclick = connectTcp;
+      el('scanBtn').onclick = scanLan;
+      el('btnAutoConnect').onclick = autoConnectEsp;
+      el('btnBannerAuto').onclick = autoConnectEsp;
+      el('disconnectBtn').onclick = () => runAction(() => postJson('/api/connect', 'connect', { mode: 'disconnect' }));
+      el('calibrateBtn').onclick = () => runAction(() => postJson('/api/calibrate', 'calibrate', {}));
+      el('resetCalBtn').onclick = () => runAction(() => postJson('/api/calibrate/reset', 'calibrate-reset', {}));
+      el('btnQuickResetCal').onclick = () => runAction(() => postJson('/api/calibrate/reset', 'calibrate-reset', {}));
+      el('btnBannerCal').onclick = () => runAction(() => postJson('/api/calibrate', 'calibrate', {}));
+      el('saveCloudBtn').onclick = () => saveCloudConfig(false);
+      el('btnTestFall').onclick = () => runAction(() => postJson('/api/alert/test', 'alert-test', { send_cloud: true }));
+      el('btnAckFall').onclick = () => runAction(() => postJson('/api/alert/ack', 'alert-ack', {}));
+      el('espHost').onkeydown = e => { if (e.key === 'Enter') connectTcp(); };
+      el('espPort').onkeydown = e => { if (e.key === 'Enter') connectTcp(); };
+
+      update();
+      setInterval(update, 200);
+  </script>
+</body>
+
+</html>
